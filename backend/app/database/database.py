@@ -4,22 +4,32 @@ from sqlalchemy.orm import sessionmaker
 
 from sqlalchemy.ext.declarative import declarative_base
 
-DATABASE_URL = "postgresql://postgres:rishab@localhost/ai_career_copilot"
+from dotenv import load_dotenv
 
+import os
+
+# Load environment variables from .env
+load_dotenv()
+
+# Get DATABASE_URL from .env
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Create database engine
 engine = create_engine(
     DATABASE_URL
 )
 
+# Create session
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
     bind=engine
 )
 
+# Base class for models
 Base = declarative_base()
 
-# CREATE TABLES
-
+# Create tables
 Base.metadata.create_all(
     bind=engine
 )
