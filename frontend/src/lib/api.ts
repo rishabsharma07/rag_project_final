@@ -474,5 +474,128 @@ getChatHistory() {
       handle<any>
     );
   },
+// ---------------- RESUME ANALYZER ---------------- //
 
+analyzeResume(
+  file: File
+) {
+
+  return new Promise<any>(
+
+    (
+      resolve,
+      reject
+    ) => {
+
+      const xhr =
+        new XMLHttpRequest();
+
+      const base =
+
+        (
+          typeof import.meta !==
+            "undefined" &&
+
+          (import.meta as any)
+            .env?.VITE_API_URL
+        ) ||
+
+        "http://127.0.0.1:8000";
+
+      xhr.open(
+
+        "POST",
+
+        `${base}/analyze-resume`
+      );
+
+      const token =
+
+        typeof window !==
+        "undefined"
+
+          ? localStorage.getItem(
+              "token"
+            )
+
+          : null;
+
+      if (token) {
+
+        xhr.setRequestHeader(
+
+          "Authorization",
+
+          `Bearer ${token}`
+        );
+      }
+
+      xhr.onload = () => {
+
+        try {
+
+          const data =
+
+            xhr.responseText
+
+              ? JSON.parse(
+                  xhr.responseText
+                )
+
+              : {};
+
+          if (
+
+            xhr.status >= 200 &&
+
+            xhr.status < 300
+          ) {
+
+            resolve(data);
+
+          } else {
+
+            reject(
+
+              new Error(
+
+                data?.detail ||
+
+                `Request failed (${xhr.status})`
+              )
+            );
+          }
+
+        } catch {
+
+          reject(
+
+            new Error(
+              "Resume analysis failed"
+            )
+          );
+        }
+      };
+
+      xhr.onerror = () =>
+
+        reject(
+
+          new Error(
+            "Network error"
+          )
+        );
+
+      const fd =
+        new FormData();
+
+      fd.append(
+        "file",
+        file
+      );
+
+      xhr.send(fd);
+    }
+  );
+},
 };

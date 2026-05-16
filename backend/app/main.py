@@ -9,7 +9,7 @@ from app.api.auth import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.dashboard import router as dashboard_router
 from app.api.documents import router as documents_router
-
+from app.api.resume import router as resume_router
 
 
 
@@ -18,6 +18,7 @@ from app.models.quiz_history import QuizHistory
 from app.models.roadmap import Roadmap
 from app.models.chat_history import ChatHistory
 from app.models.user import User
+from app.models.resume_analysis import ResumeAnalysis
 
 
 from app.database.database import (
@@ -61,7 +62,7 @@ app.include_router(agent_router)
 app.include_router(auth_router)
 app.include_router(dashboard_router)
 app.include_router(documents_router)
-
+app.include_router(resume_router)
 
 
 @app.get("/")

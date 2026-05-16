@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UploadRouteImport } from './routes/upload'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
+import { Route as Resume_analyzerRouteImport } from './routes/resume_analyzer'
 import { Route as QuizRouteImport } from './routes/quiz'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
@@ -31,6 +32,11 @@ const SignupRoute = SignupRouteImport.update({
 const RoadmapRoute = RoadmapRouteImport.update({
   id: '/roadmap',
   path: '/roadmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Resume_analyzerRoute = Resume_analyzerRouteImport.update({
+  id: '/resume_analyzer',
+  path: '/resume_analyzer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const QuizRoute = QuizRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/quiz': typeof QuizRoute
+  '/resume_analyzer': typeof Resume_analyzerRoute
   '/roadmap': typeof RoadmapRoute
   '/signup': typeof SignupRoute
   '/upload': typeof UploadRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/quiz': typeof QuizRoute
+  '/resume_analyzer': typeof Resume_analyzerRoute
   '/roadmap': typeof RoadmapRoute
   '/signup': typeof SignupRoute
   '/upload': typeof UploadRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/quiz': typeof QuizRoute
+  '/resume_analyzer': typeof Resume_analyzerRoute
   '/roadmap': typeof RoadmapRoute
   '/signup': typeof SignupRoute
   '/upload': typeof UploadRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/quiz'
+    | '/resume_analyzer'
     | '/roadmap'
     | '/signup'
     | '/upload'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/quiz'
+    | '/resume_analyzer'
     | '/roadmap'
     | '/signup'
     | '/upload'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/login'
     | '/quiz'
+    | '/resume_analyzer'
     | '/roadmap'
     | '/signup'
     | '/upload'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
   QuizRoute: typeof QuizRoute
+  Resume_analyzerRoute: typeof Resume_analyzerRoute
   RoadmapRoute: typeof RoadmapRoute
   SignupRoute: typeof SignupRoute
   UploadRoute: typeof UploadRoute
@@ -155,6 +168,13 @@ declare module '@tanstack/react-router' {
       path: '/roadmap'
       fullPath: '/roadmap'
       preLoaderRoute: typeof RoadmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resume_analyzer': {
+      id: '/resume_analyzer'
+      path: '/resume_analyzer'
+      fullPath: '/resume_analyzer'
+      preLoaderRoute: typeof Resume_analyzerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/quiz': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
   QuizRoute: QuizRoute,
+  Resume_analyzerRoute: Resume_analyzerRoute,
   RoadmapRoute: RoadmapRoute,
   SignupRoute: SignupRoute,
   UploadRoute: UploadRoute,
