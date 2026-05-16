@@ -122,37 +122,72 @@ export const api = {
       handle<LoginResponse>
     );
   },
+// ---------------- ROADMAP ---------------- //
 
-  // ---------------- ROADMAP ---------------- //
+generateRoadmap(payload: {
 
-  generateRoadmap(payload: {
+  role: string;
 
-    role: string;
+  weak_topics: string[];
 
-    weak_topics: string[];
+  timeline: string;
+}) {
 
-    timeline: string;
-  }) {
+  return authFetch(
 
-    return authFetch(
+    "/roadmap",
 
-      "/roadmap",
+    {
+      method: "POST",
 
-      {
-        method: "POST",
+      body: JSON.stringify(
+        payload
+      ),
+    }
 
-        body: JSON.stringify(
-          payload
-        ),
-      }
+  ).then(
 
-    ).then(
+    handle<{
+      roadmap: string;
+      steps: any[];
+      roadmap_id: number;
+    }>
+  );
+},
 
-      handle<{
-        roadmap: string;
-      }>
-    );
-  },
+// ---------------- GET ROADMAPS ---------------- //
+
+getRoadmaps() {
+
+  return authFetch(
+    "/roadmaps"
+  ).then(
+    handle<any[]>
+  );
+},
+// ---------------- UPDATE ROADMAP PROGRESS ---------------- //
+
+updateRoadmapProgress(
+  roadmapId: number,
+  steps: any[]
+) {
+
+  return authFetch(
+
+    `/roadmap-progress/${roadmapId}`,
+
+    {
+      method: "PUT",
+
+      body: JSON.stringify({
+        steps,
+      }),
+    }
+
+  ).then(
+    handle<any>
+  );
+},
 
   // ---------------- QUIZ ---------------- //
 
@@ -439,4 +474,5 @@ getChatHistory() {
       handle<any>
     );
   },
+
 };

@@ -1,4 +1,5 @@
 import json
+import re
 
 from fastapi import (
     APIRouter,
@@ -46,7 +47,7 @@ class QuizRequest(
 
     difficulty: str
 
-    num_questions: int = 10
+    num_questions: int = 5
 
 # ---------------- QUIZ ROUTE ---------------- #
 
@@ -85,39 +86,44 @@ def generate_quiz(
     # ---------------- PROMPT ---------------- #
 
     prompt = f"""
-    Generate {request.num_questions}
-    multiple choice questions
-    on the topic:
-    {request.topic}
+You are a JSON API.
 
-    Difficulty Level:
-    {request.difficulty}
+Generate exactly {request.num_questions}
+multiple choice questions on:
 
-    Return ONLY valid JSON.
+Topic: {request.topic}
 
-    Format:
+Difficulty: {request.difficulty}
 
+STRICT RULES:
+
+1. Return ONLY valid JSON
+2. No markdown
+3. No explanations outside JSON
+4. No text before JSON
+5. No text after JSON
+6. Double quotes only
+7. No trailing commas
+8. Output must be parseable by Python json.loads()
+
+Required format:
+
+{{
+  "questions": [
     {{
-      "questions": [
-        {{
-          "question": "Question text",
-          "options": [
-            "Option A",
-            "Option B",
-            "Option C",
-            "Option D"
-          ],
-          "correct_answer": "Option A",
-          "explanation": "Short explanation"
-        }}
-      ]
+      "question": "What is DBMS?",
+      "options": [
+        "Option A",
+        "Option B",
+        "Option C",
+        "Option D"
+      ],
+      "correct_answer": "Option A",
+      "explanation": "Short explanation"
     }}
-
-    IMPORTANT:
-    - Do NOT add markdown
-    - Do NOT add explanations outside JSON
-    - Return ONLY JSON
-    """
+  ]
+}}
+"""
 
     # ---------------- AI RESPONSE ---------------- #
 
@@ -141,6 +147,26 @@ def generate_quiz(
 
     cleaned = cleaned.strip()
 
+    # ---------------- EXTRACT JSON ---------------- #
+
+    match = re.search(
+        r'\{.*\}',
+        cleaned,
+        re.DOTALL
+    )
+
+    if not match:
+
+        print("\nNO JSON FOUND:\n")
+        print(cleaned)
+
+        raise HTTPException(
+            status_code=500,
+            detail="No valid JSON found"
+        )
+
+    cleaned = match.group(0)
+
     # ---------------- PARSE JSON ---------------- #
 
     try:
@@ -151,7 +177,7 @@ def generate_quiz(
 
     except Exception as e:
 
-        print("\n\n========== AI RAW RESPONSE ==========\n")
+        print("\n========== AI RAW RESPONSE ==========\n")
 
         print(cleaned)
 

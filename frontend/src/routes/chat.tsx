@@ -1,43 +1,62 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  createFileRoute
+} from "@tanstack/react-router";
 
-import { toast } from "sonner";
+import {
+  toast
+} from "sonner";
 
-import { AppLayout } from "@/components/shared/AppLayout";
+import {
+  Sparkles
+} from "lucide-react";
+
+import {
+  AppLayout
+} from "@/components/shared/AppLayout";
 
 import {
   ChatMessage,
   type ChatRole
 } from "@/components/chat/ChatMessage";
 
-import { ChatInput } from "@/components/chat/ChatInput";
+import {
+  ChatInput
+} from "@/components/chat/ChatInput";
 
 import {
   ChatSidebar,
   type ChatDoc
 } from "@/components/chat/ChatSidebar";
 
-import { TypingIndicator } from "@/components/chat/TypingIndicator";
+import {
+  TypingIndicator
+} from "@/components/chat/TypingIndicator";
 
-import { api } from "@/lib/api";
+import {
+  api
+} from "@/lib/api";
 
-import { auth } from "@/lib/auth";
+import {
+  auth
+} from "@/lib/auth";
 
-import { Sparkles } from "lucide-react";
+export const Route =
+  createFileRoute("/chat")({
 
-export const Route = createFileRoute(
-  "/chat"
-)({
+    component: () => (
 
-  component: () => (
+      <AppLayout>
+        <ChatPage />
+      </AppLayout>
 
-    <AppLayout>
-      <ChatPage />
-    </AppLayout>
-
-  ),
-});
+    ),
+  });
 
 type Msg = {
 
@@ -96,29 +115,60 @@ function ChatPage() {
 
   }, [messages, sending]);
 
+  // ---------------- LOAD CHAT HISTORY ---------------- //
+
+  useEffect(() => {
+
+    api.getChatHistory()
+
+      .then((data) => {
+
+        if (
+
+          data?.messages &&
+
+          data.messages.length > 0
+        ) {
+
+          setMessages(
+            data.messages as Msg[]
+          );
+        }
+
+      })
+
+      .catch(console.error);
+
+  }, []);
+
   // ---------------- LOAD DOCUMENTS ---------------- //
 
-useEffect(() => {
+  useEffect(() => {
 
-  api.getChatHistory()
+    api.getDocuments()
 
-    .then((data) => {
+      .then((data) => {
 
-      if (
-        data?.messages &&
-        data.messages.length > 0
-      ) {
+        if (data) {
 
-        setMessages(
-          data.messages as Msg[]
-        );
-      }
+          const formattedDocs =
+            data.map((doc) => ({
 
-    })
+              id: doc.id,
 
-    .catch(console.error);
+              name: doc.filename,
+            }));
 
-}, []);
+          setDocs(
+            formattedDocs
+          );
+        }
+
+      })
+
+      .catch(console.error);
+
+  }, []);
 
   // ---------------- SEND MESSAGE ---------------- //
 
@@ -158,10 +208,6 @@ useEffect(() => {
 
           res?.response ||
 
-          res?.reply ||
-
-          res?.message ||
-
           "(no response)";
 
         // AI RESPONSE
@@ -183,6 +229,7 @@ useEffect(() => {
         toast.error(
 
           err?.message ||
+
           "Chat failed"
         );
 

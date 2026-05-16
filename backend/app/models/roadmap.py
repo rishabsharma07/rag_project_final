@@ -4,7 +4,8 @@ from sqlalchemy import (
     String,
     ForeignKey,
     DateTime,
-    Text
+    Text,
+    JSON
 )
 
 from datetime import datetime
@@ -29,6 +30,12 @@ class Roadmap(Base):
     roadmap_text = Column(
         Text,
         nullable=False
+    )
+
+    # NEW
+    steps = Column(
+        JSON,
+        nullable=True
     )
 
     progress = Column(

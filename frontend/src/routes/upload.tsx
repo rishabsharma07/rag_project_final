@@ -56,7 +56,6 @@ function UploadPage() {
 
             name: doc.filename,
 
-            size: 0,
           }));
 
         setFiles(mapped);
@@ -106,8 +105,6 @@ function UploadPage() {
             res?.filename ??
             file.name,
 
-          size:
-            file.size,
         };
 
         setFiles((prev) => [
